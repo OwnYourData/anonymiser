@@ -1,0 +1,112 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3> Further Information</h3>
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top: 10px;">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="panel_2">
+                        <h2 class="panel-title">
+                            <a role="button" data-toggle="collapse" 
+                                data-parent="#accordion" href="#collapseTwo" 
+                                aria-expanded="true" aria-controls="collapseTwo">
+                                    What is the Semantic Overlay Architecture (SOyA)?
+                            </a>
+                        </h2>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse" 
+                            role="tabpanel" aria-labelledby="panel_2">
+                        <div class="panel-body">
+                            <p><a href="https://ownyourdata.github.io/soya/" target="_blank">Semantic Overlay Architecture (SOyA)</a> is a data model authoring and publishing platform and also provides functionalities for validation and transformation. It builds on W3C <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework" target="_blank">Resource Description Framework (RDF)</a> and related semantic web technologies to provide a lightweight approach for data integration and exchange. At the core of SOyA is a YAML-based data model for describing data structures with bases and optional overlays, which provide additional information and context.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="panel_1">
+                        <h2 class="panel-title">
+                            <a role="button" data-toggle="collapse" 
+                                data-parent="#accordion" href="#collapseOne" 
+                                aria-expanded="true" aria-controls="collapseTwo">
+                                    Anonymisation Process
+                            </a>
+                        </h2>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse" 
+                            role="tabpanel" aria-labelledby="panel_1">
+                        <div class="panel-body">
+                            <p>This anonymisation process ensures GDPR-compliant handling of personal data by applying a configurable, ontology-driven approach. It begins by fetching a JSON-LD configuration from a knowledge graph, which defines the anonymization type and data type for each attribute using SPARQL queries. For every attribute, a matching anonymizer (e.g., masking, generalization, or randomization) is instantiated—depending on available implementations—and applied to the input data after restructuring it by attribute. Generalization, for example, assigns values into buckets to reduce identifiability, while randomization introduces controlled noise, and masking hides values entirely. This modular process ensures flexibility and extensibility, and the entire service is accessible via a documented API. For more details, visit the GitHub repository: <a href="https://github.com/OwnYourData/anonymisation-service?tab=readme-ov-file#anonymisation-service" target="_blank">https://github.com/OwnYourData/anonymisation-service</a>.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="panel_5">
+                        <h2 class="panel-title">
+                            <a role="button" data-toggle="collapse" 
+                                data-parent="#accordion" href="#collapseFive" 
+                                aria-expanded="true" aria-controls="collapseFive">
+                                    Step-by-Step Guide
+                            </a>
+                        </h2>
+                    </div>
+                    <div id="collapseFive" class="panel-collapse collapse" 
+                            role="tabpanel" aria-labelledby="panel_5">
+                        <div class="panel-body">
+                            <p>Follow those steps to anonymise your dataset using the Anonymsiation Service:
+                                <ol>
+                                    <li>item</li>
+                                    <li>item</li>
+                                </ol>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="panel_4">
+                        <h2 class="panel-title">
+                            <a role="button" data-toggle="collapse" 
+                                data-parent="#accordion" href="#collapseFour" 
+                                aria-expanded="true" aria-controls="collapseFour">
+                                    Using the Anomyisation Service API
+                            </a>
+                        </h2>
+                    </div>
+                    <div id="collapseFour" class="panel-collapse collapse" 
+                            role="tabpanel" aria-labelledby="panel_4">
+                        <div class="panel-body">
+                            <p>This website is a frontend for the underlying technology of data anonymisation. You can use this service via a REST API by calling the following API endpoint:
+                            <ul>
+                                <li><code>POST https://anonymizer.go-data.at/api/anonymise</code>: provide the data set and a reference to the SOyA structure in the body of a POST request;<br>example:
+                                    <pre>cat input.json | curl -H 'Content-Type: application/json' -d @- -X POST https://anonymizer.go-data.at/api/anonymise</pre></li>
+                                <li>data format of <code>input.json</code><br>
+                                    <pre>{
+  "configurationURL": "https://soya.ownyourdata.eu/AnonymisationDemo",
+  "data": [...]
+}</pre>
+                                example file: <a href="/input.json">input.json</a>
+                            </ul></p>
+                            <p>Swagger API of this service is available here: <a href="https://anonymizer.go-data.at/swagger-ui/index.html" target="_blank">https://anonymizer.go-data.at/swagger-ui/index.html</a><br>
+                            Docker image for local deployment can be downloaded here: <a href="https://hub.docker.com/r/oydeu/anonymizer" target="_blank">https://hub.docker.com/r/oydeu/anonymizer</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="panel_3">
+                        <h2 class="panel-title">
+                            <a role="button" data-toggle="collapse" 
+                                data-parent="#accordion" href="#collapseThree" 
+                                aria-expanded="true" aria-controls="collapseThree">
+                                    Provide Feedback
+                            </a>
+                        </h2>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse" 
+                            role="tabpanel" aria-labelledby="panel_3">
+                        <div class="panel-body">
+                            <p>This service is a Proof-of-Concept to demonstrate an anonymisation service using the <a href="https://ownyourdata.github.io/soya/#overlay_element"  target="_blank">overlay capabilities of SOyA</a>, i.e., show-case an easy but still machine-readable format to describe datasets and use the built-in mechanisms of SOyA for anonymisation.</p>
+                            <p>We would like to encourage everyone to <a href="https://github.com/OwnYourData/anonymisation-service/issues" target="_blank">report issues</a> or even <a href="https://github.com/OwnYourData/anonymisation-service/pulls" target="_blank">provide pull-requests</a> on the public <a href="https://github.com/OwnYourData/anonymisation-service" target="_blank">Github repository</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

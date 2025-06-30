@@ -1,0 +1,80 @@
+<% provide(:title, 'Anonymiser') %>
+
+<div class="container" style="margin-top: 20px; margin-bottom: 20px;">
+    <div class="row">
+        <%= form_with url: submit_path, method: :post, local: true do |form| %>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="form-group">
+                        <%= label_tag :file_input, "Input Data" %>
+                        <a style="margin: 7px 2px 2px 7px; border: 0; color: darkgray; outline: none; cursor: pointer;" tabindex="0" data-toggle="popover" data-trigger="focus" data-placement="bottom" title="Data Anonymisation" data-content="<span class='text-nowrap'>Upload your dataset and select a</span> SOyA structure describing the anonymisation. <a href='/example'>Click here</a> to load example data and then execute 'Anonymise'."><i class="fa fa-question-circle" style="font-size: 1.3em;" aria-hidden="true"></i></a>
+                        <%= file_field_tag :file_input, accept: ".txt,.json", class: "form-control", onchange: "loadFileIntoTextarea(this)" %>
+                    </div>
+                    <%= form.text_area :data, value: @data || '', id: "data_textarea", class: "form-control rounded-0", rows: 10, 
+                        style: "font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;" %>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <%= form.label :model, "Model" %><br>
+                <div class="input-group" style="width: 100%;margin-bottom: 15px;">
+                    <%= form.text_field :model, value: @soya, class: "form-control", placeholder: "SOyA Structure" %>
+                    <span class="input-group-btn">
+                        <button id="inspect-button" type="button" class="btn btn-default">Inspect</button>
+                    </span>
+                    <span class="input-group-btn">
+                      <%= link_to "Create SOyA Structure",
+                                  "https://soya.ownyourdata.eu",
+                                  target: "_blank",
+                                  class: "btn btn-link" %>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <%= form.submit "Anonymise", class: "btn btn-success" %>
+                <%= form.submit "Reset", class: "btn btn-default" %>
+            </div>
+            <% if @result.to_s != '' %>
+                <div class="col-md-12" style="margin-top: 20px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; background-color: lightgrey; padding: 5px;">
+                    <%= form.label :result, "Result", style: "margin-bottom: 0;" %>
+                    <%= form.submit "Export to TTL", class: "btn btn-default btn-sm" %>
+                  </div>
+                  <%= text_area_tag :result, @result, rows: 10, readonly: true, style: "width: 100%; background-color: #f9f9f9; border-color: lightgrey;" %>
+                </div>
+            <% end %>
+        <% end %>
+    </div>
+</div>
+
+<%= render 'info' %>
+
+<script type="text/javascript">
+$(function () {
+  $('[data-toggle="popover"]').popover({html:true})
+})
+</script> 
+
+<script>
+  function loadFileIntoTextarea(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const content = e.target.result;
+      document.getElementById("data_textarea").value = content;
+    };
+    reader.readAsText(file);
+  }
+</script>
+<script>
+    document.getElementById("inspect-button").addEventListener("click", function() {
+        const modelValue = document.getElementById("model").value.trim();
+        if (modelValue !== "") {
+            const url = `https://soya.ownyourdata.eu/${encodeURIComponent(modelValue)}/yaml`;
+            window.open(url, '_blank');
+        } else {
+            alert("Bitte einen Wert eingeben.");
+        }
+    });
+</script>

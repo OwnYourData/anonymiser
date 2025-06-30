@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dc-anonymiser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dc-anonymiser
+  template:
+    metadata:
+      name: dc-anonymiser
+      labels:
+        app: dc-anonymiser
+    spec:
+      containers:
+      - name: dc-anonymiser
+        image: oydeu/dc-anonymiser:latest
+        ports:
+        - containerPort: 3000
+        env:
+          - name: LANG
+            value: C.UTF-8
+          - name: RAILS_LOG_TO_STDOUT
+            value: "TRUE"
+          - name: RAILS_SERVE_STATIC_FILES
+            value: "TRUE"
+          - name: RAILS_ENV
+            value: production
+          - name: AUTH
+            value: "TRUE"
+          - name: DC_DB
+            value: kubernetes
+          - name: DB2_HOST
+            value: postgres
+          - name: DB2_NAME
+            value: dc-anonymiser
+          - name: DB2_USER
+            value: postgres
+          - name: POSTGRES2_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: superUserPassword
+          - name: RAILS_CONFIG_HOSTS
+            value: "anonymiser.ownyourdata.eu"
+          - name: DEFAULT_DID_OAUTH_APP
+            value: oydid
+          - name: DEFAULT_VC_OAUTH_APP
+            value: oydid-vc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: dc-anonymiser
+spec:
+  selector:
+    app: dc-anonymiser
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dc-anonymiser
+  annotations:
+    certmanager.io/issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: "nginx"
+  tls:
+  - hosts:
+    - anonymiser.ownyourdata.eu
+    secretName: dc-anonymiser-tls
+  rules:
+  - host: anonymiser.ownyourdata.eu
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: dc-anonymiser
+            port:
+              number: 80
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dc-anonymiser-tls
+  annotations:
+    cert-manager.io/issuer: "letsencrypt-prod"
+spec:
+  secretName: dc-anonymiser-tls
+  issuerRef:
+    group: cert-manager.io
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - 'anonymiser.ownyourdata.eu'
